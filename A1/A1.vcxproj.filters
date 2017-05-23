@@ -16,6 +16,15 @@
     <Filter Include="Core">
       <UniqueIdentifier>{36364fc3-ff88-45b5-a08f-89618c586cd4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mesh">
+      <UniqueIdentifier>{1fe4fb87-5398-4181-8967-fd182cbf4da9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mesh\PrimitiveShape">
+      <UniqueIdentifier>{b2b97dff-234b-4a54-a23d-bf2702adc5ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{2777a26d-1170-46ab-b74b-de78e301fea1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base.h">
@@ -28,6 +37,24 @@
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\SimpleD3D.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Mesh.h">
+      <Filter>Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Cube.h">
+      <Filter>Mesh\PrimitiveShape</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Interface.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\DirectInput.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Camera.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,5 +71,25 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh\Mesh.cpp">
+      <Filter>Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Cube.cpp">
+      <Filter>Mesh\PrimitiveShape</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\DirectInput.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Math.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Camera.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Color.fx">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

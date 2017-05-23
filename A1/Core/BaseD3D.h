@@ -45,4 +45,7 @@ protected:
 	D3DXCOLOR			m_ClearColor;
 	int					m_iClientWidth;
 	int					m_iClientHeight;
+	int					m_iScreenWidth;
+	int					m_iScreenHeight;
+	int					m_iBoderSize[2];
 };

@@ -11,7 +11,7 @@
 
 #include <d3dx10.h>
 #include <dxerr.h>
-
+#include <dinput.h>
 
 #if defined(_DEBUG) || defined(DEBUG)
 	#ifndef D3D_DEBUG_INFO
@@ -61,8 +61,15 @@ const D3DXCOLOR LIGHT_YELLOW_GREEN(0.48f, 0.77f, 0.46f, 1.0f);
 const D3DXCOLOR DARK_YELLOW_GREEN(0.1f, 0.48f, 0.19f, 1.0f);
 const D3DXCOLOR DARKBROWN(0.45f, 0.39f, 0.34f, 1.0f);
 
+#include "Core\Math.h"
 
+#include "Mesh\Mesh.h"
+#include "Mesh\Cube.h"
+
+#include "Core\DirectInput.h"
 #include "Core\Timer.h"
+#include "Core\Camera.h"
+
 #include "Core\BaseD3D.h"
 #include "Core\SimpleD3D.h"
 

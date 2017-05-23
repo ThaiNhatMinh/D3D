@@ -8,10 +8,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,	PSTR cmdLine, in
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-
+	//fprintf(stderr, "ERRR\n");
 	SimpleD3D theApp(hInstance);
 
 	theApp.OnInitApp();
 
-	return theApp.Run();
+
+	gDInput = new DirectInput(&theApp, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+	int r =  theApp.Run();
+
+
+	delete gDInput;
+
+	return r;
 }

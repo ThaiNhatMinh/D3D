@@ -26,6 +26,13 @@ BaseD3D::BaseD3D(HINSTANCE hInstance):m_hInstance(hInstance),m_pD3DDevice(0),m_p
 
 BaseD3D::~BaseD3D()
 {
+	R(m_pDepthStencilBuffer);
+	R(m_pDepthStencilView);
+	R(m_pFont);
+	R(m_pRenderTargetView);
+	R(m_pSwapChain);
+	R(m_pD3DDevice);
+
 }
 
 HINSTANCE BaseD3D::GetInstance()
@@ -79,9 +86,9 @@ void BaseD3D::OnInitApp()
 	fontDesc.MipLevels = 1;
 	fontDesc.Italic = false;
 	fontDesc.CharSet = DEFAULT_CHARSET;
-	fontDesc.OutputPrecision = OUT_DEFAULT_PRECIS;
+	fontDesc.OutputPrecision = OUT_OUTLINE_PRECIS;
 	fontDesc.Quality = ANTIALIASED_QUALITY;
-	fontDesc.PitchAndFamily = DEFAULT_PITCH | FF_DONTCARE;
+	fontDesc.PitchAndFamily = MONO_FONT | FF_DONTCARE;
 	wcscpy(fontDesc.FaceName, L"Tahoma");
 
 	D3DX10CreateFontIndirect(m_pD3DDevice, &fontDesc, &m_pFont);
@@ -141,13 +148,17 @@ void BaseD3D::OnResize()
 
 void BaseD3D::OnUpdateScene(float dt)
 {
+	//SetCursorPos(m_iScreenWidth / 2, m_iScreenHeight / 2);
+	gDInput->Update();
 	int fps = m_Timer.GetFPS(); // fps = frameCnt / 1
 	float mspf = 1000.0f /(float) fps;
 
 	std::wostringstream outs;
 	outs.precision(6);
 	outs << L"FPS: " << fps << L"\n"
-		<< "Milliseconds: Per Frame: " << mspf;
+		<< "Milliseconds: Per Frame: " << mspf << L"\n";
+		//<< "DX: " << gDInput->mouseDX() << L"\n"
+		//<< "DY: " << gDInput->mouseDY();
 	m_FrameStatus = outs.str();
 }
 
@@ -169,6 +180,8 @@ LRESULT CALLBACK MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			// Get the 'this' pointer we passed to CreateWindow via the lpParam parameter.
 			CREATESTRUCT* cs = (CREATESTRUCT*)lParam;
 			app = (BaseD3D*)cs->lpCreateParams;
+			ShowCursor(0);
+			//SetCapture(hwnd);
 			return 0;
 		}
 	}
@@ -192,11 +205,23 @@ LRESULT BaseD3D::MsgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		{
 			m_bAppPaused = true;
 			m_Timer.Stop();
+			//ReleaseCapture();
+			ClipCursor(NULL);
 		}
 		else
 		{
+			//SetCapture(m_Hwnd);
 			m_bAppPaused = false;
 			m_Timer.Start();
+			RECT rect;
+			GetClientRect(m_Hwnd, &rect);
+			RECT rect2;
+			GetWindowRect(m_Hwnd,&rect2);
+			rect.left += rect2.left+m_iBoderSize[0];
+			rect.top += rect2.top +m_iBoderSize[1];
+			rect.bottom+= rect2.top+ m_iBoderSize[1];
+			rect.right += rect2.left+ m_iBoderSize[0];
+			ClipCursor(&rect);
 		}
 		return 0;
 
@@ -289,6 +314,9 @@ LRESULT BaseD3D::MsgProc(UINT msg, WPARAM wParam, LPARAM lParam)
 		((MINMAXINFO*)lParam)->ptMinTrackSize.x = 200;
 		((MINMAXINFO*)lParam)->ptMinTrackSize.y = 200;
 		return 0;
+//	case WM_MOUSEMOVE:
+//		if (!m_bAppPaused) SetCursorPos(m_iScreenWidth / 2, m_iScreenHeight / 2);
+//		return 0;
 	}
 
 	return DefWindowProc(m_Hwnd, msg, wParam, lParam);
@@ -313,13 +341,19 @@ void BaseD3D::InitWindows()
 		MessageBox(0, L"Register Class Failed", 0, 0);
 		PostQuitMessage(0);
 	}
-
+	DWORD dwStyle = WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX;
 	RECT R = { 0, 0, m_iClientWidth, m_iClientHeight };
-	AdjustWindowRect(&R, WS_OVERLAPPEDWINDOW, false);
+	AdjustWindowRect(&R, dwStyle, false);
 	int width = R.right - R.left;
 	int height = R.bottom - R.top;
 
-	m_Hwnd = CreateWindow(L"D3DWndClass", m_WndCaption.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, m_hInstance, this);
+	m_iBoderSize[0] = (width - m_iClientWidth) / 2;
+	m_iBoderSize[1] = height - m_iClientHeight - m_iBoderSize[0];
+	m_iScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	m_iScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+	int x = m_iScreenWidth / 2 - width / 2;
+	int y = m_iScreenHeight / 2 - height / 2;
+	m_Hwnd = CreateWindow(L"D3DWndClass", m_WndCaption.c_str(), dwStyle, x, y, width, height, 0, 0, m_hInstance, this);
 
 	if (!m_Hwnd)
 	{
